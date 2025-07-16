@@ -28,6 +28,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/html5-qrcode.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -46,6 +47,32 @@ export default {
   ],
   
   auth: {
+    redirect: {
+      login: "/auth/signin",
+      logout: "/auth/signin",
+      callback: "/auth/callback",
+      home: "/",
+    },
+    autoFetchUser: false,
+    strategies: {
+      google: {
+        clientId: '553391507668-bd610cqi5o3n7svmefq5gtebs852tovf.apps.googleusercontent.com',
+        scheme: "oauth2",
+        endpoints: {
+          authorization: "https://accounts.google.com/o/oauth2/auth",
+          userInfo: "https://www.googleapis.com/oauth2/v3/userinfo",
+        },
+        token:{
+          property: "access_token",
+          type: "Bearer",
+          maxAge: 1000,
+        },
+        responseType: "token id_token",
+        scope: ["openid", "profile","email"],
+        redirectUri: "http://localhost:3000/auth/callback",
+        codeChallengeMethod:"",
+      },
+    }
     // Options
   },
 
