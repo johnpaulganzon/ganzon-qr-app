@@ -115,7 +115,7 @@ export default {
           to: '/SignIn'
         },
         {
-          icon: 'mdi-Login-Variant',
+          icon: 'mdi mdi-barcode-scan',
           title: 'qrcodeScanner',
           to: '/qrscanner'
         }
