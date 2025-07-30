@@ -1,16 +1,22 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
-  // Global page headers: https://go.nuxtjs.dev/config-head
+  server: {
+    host: process.env.NODE_ENV === 'production' ? '0' : 'localhost',
+    port: process.env.PORT || 3000
+  },
+  
+  publicRuntimeConfig: {
+    baseURL: process.env.BASE_URL || 'https://ganzon-qr-app.vercel.app',
+    googleRedirectUri: process.env.GOOGLE_REDIRECT_URI
+  },
+
   head: {
     titleTemplate: '%s - ganzon-qr-app',
     title: 'ganzon-qr-app',
-    htmlAttrs: {
-      lang: 'en'
-    },
+    htmlAttrs: { lang: 'en' },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -22,25 +28,18 @@ export default {
     ]
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: [],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/html5-qrcode.js'
+    { src: '~/plugins/html5-qrcode.client.js', mode: 'client' }
   ],
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
   ],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next'
@@ -48,35 +47,39 @@ export default {
   
   auth: {
     redirect: {
-      login: "/auth/signin",
-      logout: "/auth/signin",
-      callback: "/auth/callback",
-      home: "/",
+      login: '/auth/signin',
+      logout: '/auth/signin',
+      callback: '/auth/callback',
+      home: '/',
+    },
+    cookie: {
+      options: {
+        secure: true,
+        domain: '.vercel.app'
+      }
     },
     autoFetchUser: false,
     strategies: {
       google: {
-        clientId: '553391507668-bd610cqi5o3n7svmefq5gtebs852tovf.apps.googleusercontent.com',
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        redirectUri: process.env.GOOGLE_REDIRECT_URI,
         scheme: "oauth2",
         endpoints: {
           authorization: "https://accounts.google.com/o/oauth2/auth",
           userInfo: "https://www.googleapis.com/oauth2/v3/userinfo",
         },
-        token:{
+        token: {
           property: "access_token",
           type: "Bearer",
-          maxAge: 1000,
+          maxAge: 1800,
         },
         responseType: "token id_token",
-        scope: ["openid", "profile","email"],
-        redirectUri: "http://localhost:3000/auth/callback",
-        codeChallengeMethod:"",
+        scope: ["openid", "profile", "email"],
+        codeChallengeMethod: "",
       },
     }
-    // Options
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
@@ -95,7 +98,5 @@ export default {
     }
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  }
+  build: {}
 }
